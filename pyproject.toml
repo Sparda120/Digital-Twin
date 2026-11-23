@@ -1,0 +1,24 @@
+[project]
+name = "digital-twin"
+version = "0.1.0"
+description = "Digital Twin de Infraestruturas de Rede: Emulação e Validação de Ambientes Físicos Corporativos"
+authors = [{ name = "Spardac", email = "jhlopes120@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.0.0",
+    "pyyaml>=6.0.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-v --strict-markers"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = []

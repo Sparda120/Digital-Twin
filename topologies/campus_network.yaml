@@ -1,0 +1,73 @@
+name: ipt-campus-core
+description: Topologia Digital Twin de teste para o campus do Instituto Politécnico de Tomar
+
+devices:
+  - name: rtr-core-01
+    device_type: router
+    model: cisco-ios-xe
+    management_ip: 10.10.0.1
+    interfaces:
+      - name: GigabitEthernet0/0/0
+        ip_address: 10.0.1.1/30
+        enabled: true
+      - name: GigabitEthernet0/0/1
+        ip_address: 10.0.1.5/30
+        enabled: true
+
+  - name: sw-dist-01
+    device_type: switch
+    model: extreme-exos
+    management_ip: 10.10.0.2
+    interfaces:
+      - name: port1
+        ip_address: 10.0.1.2/30
+        enabled: true
+      - name: port2
+        vlan_id: 100
+        enabled: true
+
+  - name: sw-acc-01
+    device_type: switch
+    model: extreme-exos
+    management_ip: 10.10.0.3
+    interfaces:
+      - name: port1
+        vlan_id: 100
+        enabled: true
+      - name: port24
+        vlan_id: 100
+        enabled: true
+
+  - name: srv-digitaltwin
+    device_type: host
+    model: ubuntu-server
+    management_ip: 10.10.0.50
+    interfaces:
+      - name: eth0
+        vlan_id: 100
+        enabled: true
+
+links:
+  # Ligação Ponto-a-Ponto Core Router <-> Distribution Switch
+  - source_device: rtr-core-01
+    source_interface: GigabitEthernet0/0/0
+    target_device: sw-dist-01
+    target_interface: port1
+    latency_ms: 0.5
+    bandwidth_mbps: 10000
+
+  # Trunk entre Distribution e Access Switch
+  - source_device: sw-dist-01
+    source_interface: port2
+    target_device: sw-acc-01
+    target_interface: port1
+    latency_ms: 0.2
+    bandwidth_mbps: 1000
+
+  # Servidor ligado ao Access Switch
+  - source_device: sw-acc-01
+    source_interface: port24
+    target_device: srv-digitaltwin
+    target_interface: eth0
+    latency_ms: 0.1
+    bandwidth_mbps: 1000
