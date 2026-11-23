@@ -1,8 +1,10 @@
 # Digital Twin de Infraestruturas de Rede: Emulação e Validação de Ambientes Físicos Corporativos
 
-**Instituição:** Instituto Politécnico de Tomar (IPT) – Engenharia Informática  
+**Instituição:** Instituto Politécnico de Tomar (IPT)  
+**Curso:** Licenciatura em Engenharia Informática (3.º Ano)  
+**Unidade Curricular:** Projeto Final  
 **Ano Letivo:** 2026/2027  
-**Autor:** Spardac ([Sparda120](https://github.com/Sparda120))
+**Autor:** Spardac ([Sparda120](https://github.com/Sparda120))  
 
 ---
 
