@@ -5,6 +5,7 @@
 **Unidade Curricular:** Projeto Final  
 **Ano Letivo:** 2026/2027  
 **Autor:** Spardac ([Sparda120](https://github.com/Sparda120))  
+            Arthur (https://github.com/ArthurSimoesFerreira)
 
 ---
 
