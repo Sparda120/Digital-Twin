@@ -1,0 +1,45 @@
+As entrevistas técnicas na Cloudflare, Cisco ou Nokia raramente chumbam candidatos por não saberem um comando específico de CLI. O que elimina a maioria das pessoas são quatro áreas onde a faculdade e as certificações tradicionais deixam lacunas: **troubleshooting ao nível do pacote**, **Linux networking profundo**, **engenharia de software aplicada a redes** e **live coding**.
+
+---
+
+### 1. Linux Networking e Troubleshooting "a frio"
+
+Na Cloudflare (e em muitas equipas de *core* na Nokia), o Linux **é** o router/servidor. Saber usar o sistema operativo no dia a dia não chega; precisas de dominar a pilha de rede do kernel:
+
+* **Ferramentas de diagnóstico:** Dominar `tcpdump` (e analisar capturas no Wireshark), `iproute2` (`ip route`, `ip neigh`, `ip netns`), `ss`, `dig`, `mtr` e `curl -v`.
+* **A pergunta clássica de entrevista:** *"O que acontece exatamente, pacote a pacote, desde que fazes `curl [https://exemplo.com](https://exemplo.com)` até receberes a resposta?"* Tens de conseguir explicar sem hesitar DNS, ARP, tabela de encaminhamento, TCP 3-way handshake, TLS handshake, MTU/fragmentação e HTTP.
+* **Debugging estruturado:** Treinar cenários de falha ("uma sessão BGP ficou presa em *Active*, como investigas?", "há perda de pacotes intermitente entre dois sites, por onde começas?"). Os entrevistadores avaliam o teu **método de eliminação**, não se acertas à primeira.
+
+---
+
+### 2. Stack Profissional de NetDevOps (Além de scripts soltos)
+
+Saber escrever um script em Python que fala com uma REST API já te destaca, mas as empresas querem ver práticas de engenharia de software aplicadas à infraestrutura:
+
+* **Ansible e Modelos de Dados (YANG):** O Ansible continua a ser o padrão de facto em grandes empresas (Cisco, Nokia, integradores) para gestão de configuração em massa. Perceber **NETCONF / RESTCONF** e modelos **YANG** dá-te uma vantagem enorme sobre quem só faz *screen scraping* via SSH.
+* **Git e CI/CD (GitHub Actions / GitLab CI):** Saber gerir configurações como código (*Infrastructure as Code*) — usar branches, *pull requests* e pipelines automáticos que validam a sintaxe e correm testes antes de aplicar alterações na rede.
+* **Containerlab:** É o complemento moderno ao EVE-NG/GNS3. Corre topologias de rede diretamente em contentores Docker, consome muito menos recursos e integra-se facilmente em pipelines de CI/CD. Mencionar ou demonstrar isto numa entrevista de NetDevOps causa logo excelente impressão.
+
+---
+
+### 3. Live Coding e Python "de Produção"
+
+Para funções de engenharia na Cloudflare e equipas de automação na Cisco, vais quase de certeza apanhar uma ronda de programação ao vivo:
+
+* **Algoritmos e Estruturas de Dados (nível Easy/Medium):** Não precisas de ser um campeão de programação competitiva, mas tens de resolver confortavelmente problemas de manipulação de strings/logs, dicionários, árvores/grafos básicos e complexidade (Big O) em Python no LeetCode ou HackerRank.
+* **Python robusto:** Saber ir além de scripts sequenciais — usar **concorrência** (`asyncio` ou `concurrent.futures`) para recolher dados de 100 equipamentos em simultâneo, tratar exceções de rede corretamente (timeouts, falhas de autenticação) e escrever testes unitários com `pytest`.
+
+---
+
+### 4. Cloud Networking e Observabilidade
+
+As redes modernas já não vivem só em bastidores físicos; ligam-se diretamente à cloud e dependem de telemetria contínua:
+
+* **Terraform e conceitos de Cloud:** Perceber como funciona uma **VPC**, sub-redes públicas/privadas, *NAT Gateways*, *Load Balancers* e *Security Groups* (na AWS, GCP ou Azure), e saber provisionar essa base com **Terraform**.
+* **Monitorização moderna:** Ter noções práticas de **Prometheus + Grafana** (ou *Streaming Telemetry* via gNMI) para recolher métricas e criar alertas, em vez de depender apenas do SNMP clássico.
+
+---
+
+### Como encaixar isto sem ficares sobrecarregado
+
+Não tentes aprender tudo em paralelo de forma isolada. A forma mais eficiente é **embutir estas competências no que já estás a fazer**: versiona o teu projeto final num repositório Git bem documentado com um pipeline simples de CI/CD, adiciona testes automatizados em `pytest` e usa uma stack de monitorização básica para validar o estado da rede. Assim, chegas às entrevistas com provas reais em produção/laboratório em vez de apenas palavras-chave no currículo.
