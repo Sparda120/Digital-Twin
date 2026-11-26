@@ -1,0 +1,30 @@
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "result": [
+    {
+      "CLIoutput": "\n        Neighbor           Neighbor                           Neighbor\nPort    Chassis ID         Port ID            TTL     Age     System Name\n===============================================================================\n1       0C:5A:4F:C4:00:00  1                  120     18      EXOS-VM\n===============================================================================\nNOTE: The Chassis ID and/or Port ID might be truncated to fit the screen.\n\n"
+    },
+    {
+      "lldpPortNbrInfoShort": {
+        "age": 18,
+        "lastUpdate": 5682,
+        "nbrChassisID": "0C:5A:4F:C4:00:00",
+        "nbrChassisIdType": 4,
+        "nbrIndex": 1,
+        "nbrPortDescr": "Not-Advertised",
+        "nbrPortID": 1,
+        "nbrPortIdType": 5,
+        "nbrSysDescr": "ExtremeXOS (EXOS-VM) version 33.1.1.31 by release-manager on Wed 11 Sep 2024 07:26:33 PM UTC",
+        "nbrSysName": "EXOS-VM",
+        "nbrsOnThisPort": 1,
+        "port": 1,
+        "ttl": 120
+      },
+      "status": "MORE"
+    },
+    {
+      "status": "SUCCESS"
+    }
+  ]
+}

@@ -32,7 +32,8 @@ jobs:
         run: ruff format --check .
 
       - name: Run YAML Lint
-        run: yamllint -d "{extends: relaxed, rules: {line-length: {max: 140}}}" topologies/ .github/
+        run: |
+          yamllint -d "{extends: relaxed, rules: {line-length: {max: 140}}}" topologies/ .github/
 
   test:
     name: Unit Tests (Python ${{ matrix.python-version }})

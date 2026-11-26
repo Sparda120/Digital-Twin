@@ -37,3 +37,21 @@ Registo cronológico do desenvolvimento do projeto para acompanhamento contínuo
 
 ### Próximo passo
 - Compreender e estruturar o ciclo completo do Digital Twin (Recolha $\rightarrow$ Normalização/Diff $\rightarrow$ Replicação no GNS3) antes de ligar os scripts ao *polling* contínuo.
+
+---
+
+## 2026-11-26 (Parte 3) — Recolha JSON-RPC no EXOS e Normalização
+
+### O que foi feito
+- **Coletor EXOS (`scripts/exos_collect.py`):** Implementado script mínimo que autentica via Basic Auth em `POST http://<EXOS_HOST>/jsonrpc` e executa comandos CLI no switch EXOS-VM (`show ports no-refresh`, `show vlan`, `show lldp neighbors`).
+  - *Descoberta técnica:* O método `cli` da API JSON-RPC do ExtremeXOS exige os parâmetros em formato de lista (`"params": [cmd]`) e não em objeto (`{"cmd": ...}`).
+- **Amostras reais (`samples/`):** Extraídas respostas reais (`exos_ports.json` com 2675 linhas e `exos_lldp.json` com vizinho LLDP ativo na porta 1).
+- **Normalizador (`src/exos_normalizer.py`):** Criadas as funções `normalize_exos_device` e `normalize_exos_lldp` para converter as respostas brutas do EXOS para os modelos comuns `Device`, `Interface` e `Link` (`src/models.py`).
+- **Testes automatizados (`tests/test_exos_normalizer.py`):** Adicionados testes unitários sobre os ficheiros em `samples/` para validar a extração das 12 portas, estado ativo/inativo, VLAN e vizinho LLDP.
+
+### Como foi testado
+- Conectividade validada ao EXOS-VM via `NAT` (`virbr0`, `192.168.122.210`).
+- `pytest -v` (incluindo os novos testes de normalização) e `ruff check .` / `ruff format --check .` executados com sucesso.
+
+### Próximo passo
+- Implementar a **Peça 5**: comparação de estado (*diff* entre dois *snapshots*) e ciclo de *polling* para sincronizar alterações no GNS3.
