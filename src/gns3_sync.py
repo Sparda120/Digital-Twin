@@ -156,7 +156,13 @@ def sync_topology_to_gns3(
         key, endpoints = _desired_link_key(link, nodes_by_name)
         desired_by_key[key] = (link, endpoints)
 
-    # Criar links novos
+    # 1. Remover primeiro links que já não existem (liberta portas antes de criar novos)
+    for key, gns3_link in existing_by_key.items():
+        if key not in desired_by_key:
+            client.delete_link(project_id, gns3_link["link_id"])
+            report.deleted_links.append(gns3_link["link_id"])
+
+    # 2. Criar links novos
     for key, (link, endpoints) in desired_by_key.items():
         if key not in existing_by_key:
             client.create_link(project_id, endpoints)
@@ -164,11 +170,5 @@ def sync_topology_to_gns3(
                 f"{link.source_device}:{link.source_interface} "
                 f"<-> {link.target_device}:{link.target_interface}"
             )
-
-    # Remover links que já não existem na rede real
-    for key, gns3_link in existing_by_key.items():
-        if key not in desired_by_key:
-            client.delete_link(project_id, gns3_link["link_id"])
-            report.deleted_links.append(gns3_link["link_id"])
 
     return report

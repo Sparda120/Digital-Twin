@@ -90,6 +90,9 @@ Registo cronológico do desenvolvimento do projeto para acompanhamento contínuo
   - Projeto `trial1` a simular a rede física (`EXOS-A` em `192.168.122.210` e `EXOS-B` em `192.168.122.211`).
   - Projeto `digital_twin_replica` criado como réplica limpa.
 - Execução de `python scripts/twin_sync.py --project digital_twin_replica --once`: criou automaticamente os 3 nós (`EXOS-A`, `EXOS-B`, `EXOS-VM`) e os 3 cabos de dados (`EXOS-A:1 <-> EXOS-B:1`, `EXOS-A:2 <-> EXOS-VM:1`, `EXOS-B:2 <-> EXOS-VM:2`).
+- **Correções de robustez em teste ao vivo:**
+  - Adicionada proteção em `scripts/twin_sync.py` para manter a réplica GNS3 intacta se o switch semente ficar temporariamente inacessível (`not topology.devices`).
+  - Invertida a ordem em `src/gns3_sync.py` para remover links obsoletos antes de criar novos, evitando erro `409 Conflict` ao renomear switches (ex.: `EXOS-VM` $\rightarrow$ `EXOS-C`).
 - `ruff check .`, `ruff format --check .` e `pytest -v` (22 passed) executados com sucesso.
 
 ### Próximo passo

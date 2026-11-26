@@ -45,6 +45,16 @@ def main() -> None:
         while True:
             ts = time.strftime("%H:%M:%S")
             topology, warnings = crawl_exos_topology(seed_ip, fetcher, seed_name=args.seed_name)
+
+            if not topology.devices:
+                print(f"[{ts}] Sem contacto com o switch semente; réplica GNS3 mantida.")
+                for w in warnings:
+                    print(f"  [!] Aviso: {w}")
+                if args.once:
+                    break
+                time.sleep(args.interval)
+                continue
+
             report = sync_topology_to_gns3(gns3, args.project, args.template, topology)
 
             if report.has_changes:
