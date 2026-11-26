@@ -55,3 +55,22 @@ Registo cronológico do desenvolvimento do projeto para acompanhamento contínuo
 
 ### Próximo passo
 - Implementar a **Peça 5**: comparação de estado (*diff* entre dois *snapshots*) e ciclo de *polling* para sincronizar alterações no GNS3.
+
+---
+
+## 2026-11-26 (Parte 4) — Motor de Diff, Polling e Descoberta Automática (BFS Crawler)
+
+### O que foi feito
+- **Motor de comparação (`src/diff.py`):** Implementada a função `diff_topologies(previous, current)` com suporte a links bidirecionais (`A:1 <-> B:1` equivalente a `B:1 <-> A:1`), detetando switches adicionados/removidos, cabos adicionados/removidos e alterações de estado das portas (`UP <-> DOWN`).
+- **Ciclo de Polling (`scripts/twin_poll.py`):** Criado script de monitorização contínua ao switch EXOS que deteta e imprime alterações em tempo real.
+- **Descoberta Automática BFS (`src/crawler.py` e `scripts/twin_crawl.py`):** Implementado crawler em largura (*Breadth-First Search*) a partir de um único switch semente (`seed_ip`), com controlo de nós já visitados para evitar loops e tolerância a vizinhos inacessíveis.
+- **Descoberta técnica EXOS (LLDP Management Address):** Identificado que no ExtremeXOS 33.1 o campo `nbrMgmtAddr` (quando `nbrMgmtAddrType == 1`, IPv4) vem codificado em bytes hexadecimais separados por `:` (ex.: `c0:a8:7a:d3` $\rightarrow$ `192.168.122.211`). Adicionado `parse_exos_mgmt_ip` em `src/exos_normalizer.py` e documentada a arquitetura na ADR 002 (`docs/decisions/002-descoberta-bfs-lldp.md`).
+- **Testes automatizados (`tests/test_diff.py`, `tests/test_crawler.py`):** Adicionados 5 novos testes unitários (total de 21 testes a passar).
+
+### Como foi testado
+- `scripts/twin_poll.py --interval 5` validado ao vivo contra o EXOS-VM (`192.168.122.210`), detetando desligamento/religamento de cabos na porta 1.
+- `scripts/twin_crawl.py` validado contra o EXOS-A (`192.168.122.210`), descobrindo automaticamente `EXOS-B` (`192.168.122.211`) e `EXOS-VM` via LLDP.
+- `ruff check .`, `ruff format --check .` e `pytest -v` (21 passed) validados localmente.
+
+### Próximo passo
+- Ligar a porta `Mgmt` de todos os switches ao `NAT` (via `Ethernet switch` de gestão) para o crawler visitar toda a rede, e conectar os eventos de *diff* à criação/remoção automática de links na API do GNS3.

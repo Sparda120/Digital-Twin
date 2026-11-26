@@ -69,3 +69,29 @@ def normalize_exos_lldp(local_device: str, lldp_payload: dict) -> list[Link]:
         )
 
     return links
+
+
+def parse_exos_mgmt_ip(addr: str | None, addr_type: int | None) -> str | None:
+    """Converte o `nbrMgmtAddr` em hexadecimal do EXOS (ex: 'c0:a8:7a:d3') para IPv4."""
+    if not addr or addr_type != 1:
+        return None
+    parts = addr.split(":")
+    if len(parts) != 4:
+        return None
+    try:
+        return ".".join(str(int(part, 16)) for part in parts)
+    except ValueError:
+        return None
+
+
+def extract_lldp_neighbor_ips(lldp_payload: dict) -> list[tuple[str, str]]:
+    """Extrai pares (sys_name, mgmt_ip) dos vizinhos LLDP que anunciam IPv4 de gestão."""
+    neighbors: list[tuple[str, str]] = []
+    for entry in lldp_payload.get("result", []):
+        if not isinstance(entry, dict) or "lldpPortNbrInfoShort" not in entry:
+            continue
+        info = entry["lldpPortNbrInfoShort"]
+        ip = parse_exos_mgmt_ip(info.get("nbrMgmtAddr"), info.get("nbrMgmtAddrType"))
+        if ip:
+            neighbors.append((str(info["nbrSysName"]), ip))
+    return neighbors
