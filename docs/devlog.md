@@ -20,3 +20,20 @@ Registo cronológico do desenvolvimento do projeto para acompanhamento contínuo
 
 ### Próximo passo
 - Criar o primeiro script Python mínimo para substituir o Postman na recolha de dados do switch EXOS via `POST /jsonrpc`.
+
+---
+
+## 2026-11-26 (Parte 2) — Primeiros Scripts Python com a API REST do GNS3
+
+### O que foi feito
+- **Dependências HTTP e configuração local:** Adicionadas as bibliotecas `requests` e `python-dotenv` ao `requirements.txt` e `pyproject.toml`, e criado o ficheiro `.env` local (ignorado pelo Git) com `GNS3_BASE_URL`.
+- **Validação de ligação (`scripts/gns3_hello.py`):** Implementado script mínimo que consulta `GET /v2/version` e `GET /v2/projects`.
+- **Criação automática de nós (`scripts/gns3_create_switch.py`):** Implementado script que localiza um projeto e um template pelo nome e cria um switch via `POST /v2/projects/{project_id}/templates/{template_id}`.
+
+### Como foi testado
+- `python scripts/gns3_hello.py`: Ligação bem-sucedida ao servidor GNS3 local; detetados 3 projetos (2 fechados e `trial1` aberto).
+- `python scripts/gns3_create_switch.py --project trial1`: Switch `EXOS-Twin-1` criado automaticamente a partir do template EXOS e visível na topologia do projeto `trial1`.
+- Verificação de qualidade: `ruff check .`, `ruff format --check .` e `pytest -q` (14 testes) passaram sem erros.
+
+### Próximo passo
+- Compreender e estruturar o ciclo completo do Digital Twin (Recolha $\rightarrow$ Normalização/Diff $\rightarrow$ Replicação no GNS3) antes de ligar os scripts ao *polling* contínuo.
