@@ -50,7 +50,11 @@ def normalize_exos_device(
     )
 
 
-def normalize_exos_lldp(local_device: str, lldp_payload: dict) -> list[Link]:
+def normalize_exos_lldp(
+    local_device: str,
+    lldp_payload: dict,
+    ignore_mgmt: bool = True,
+) -> list[Link]:
     """Converte a resposta JSON-RPC de `show lldp neighbors` numa lista de Links."""
     links: list[Link] = []
 
@@ -59,12 +63,17 @@ def normalize_exos_lldp(local_device: str, lldp_payload: dict) -> list[Link]:
             continue
 
         info = entry["lldpPortNbrInfoShort"]
+        src_port = str(info["port"])
+        dst_port = str(info["nbrPortID"])
+        if ignore_mgmt and ("mgmt" in src_port.lower() or "mgmt" in dst_port.lower()):
+            continue
+
         links.append(
             Link(
                 source_device=local_device,
-                source_interface=str(info["port"]),
+                source_interface=src_port,
                 target_device=str(info["nbrSysName"]),
-                target_interface=str(info["nbrPortID"]),
+                target_interface=dst_port,
             )
         )
 

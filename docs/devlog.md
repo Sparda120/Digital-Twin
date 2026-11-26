@@ -74,3 +74,23 @@ Registo cronológico do desenvolvimento do projeto para acompanhamento contínuo
 
 ### Próximo passo
 - Ligar a porta `Mgmt` de todos os switches ao `NAT` (via `Ethernet switch` de gestão) para o crawler visitar toda a rede, e conectar os eventos de *diff* à criação/remoção automática de links na API do GNS3.
+
+---
+
+## 2026-11-26 (Parte 5) — Sincronização Ponta-a-Ponta com o GNS3 (`gns3_sync` + `twin_sync`)
+
+### O que foi feito
+- **Filtro de gestão (`src/exos_normalizer.py`):** Atualizado `normalize_exos_lldp` com `ignore_mgmt=True` para excluir ligações LLDP da porta `mgmt` (geradas pelo `Ethernet switch` central de gestão) e manter apenas links de dados.
+- **Sincronizador GNS3 (`src/gns3_sync.py`):** Implementados `Gns3Client` e `sync_topology_to_gns3`, que criam nós em falta, estabelecem novos links (`POST /links`) e removem links inexistentes (`DELETE /links/{link_id}`), garantindo idempotência.
+- **Script ponta-a-ponta (`scripts/twin_sync.py`):** Integração completa do crawler BFS (`src/crawler.py`) com a sincronização automática no GNS3 (suporta `--once` e ciclo contínuo `--interval`).
+- **Testes automatizados (`tests/test_gns3_sync.py`):** Adicionado teste em memória para criação inicial, execução idempotente e remoção de links (total de 22 testes a passar).
+
+### Como foi testado
+- Validação em ambiente virtual com dois projetos simultâneos no servidor GNS3:
+  - Projeto `trial1` a simular a rede física (`EXOS-A` em `192.168.122.210` e `EXOS-B` em `192.168.122.211`).
+  - Projeto `digital_twin_replica` criado como réplica limpa.
+- Execução de `python scripts/twin_sync.py --project digital_twin_replica --once`: criou automaticamente os 3 nós (`EXOS-A`, `EXOS-B`, `EXOS-VM`) e os 3 cabos de dados (`EXOS-A:1 <-> EXOS-B:1`, `EXOS-A:2 <-> EXOS-VM:1`, `EXOS-B:2 <-> EXOS-VM:2`).
+- `ruff check .`, `ruff format --check .` e `pytest -v` (22 passed) executados com sucesso.
+
+### Próximo passo
+- Evoluir para o **Marco 5 (Multi-Vendor)**: abstrair o coletor e normalizador por fabricante (Cisco IOS/RESTCONF/SSH e Juniper) mantendo o mesmo modelo comum e fluxo de sincronização.
